@@ -174,7 +174,7 @@ export const VICTIMS = [
     weakness: '孤独感强，渴望被关心，对"专业人士"信任度高',
     fear: '怕拖累女儿，怕自己跟不上时代',
     trustBonus: 15,
-    revealText: '像你妈妈',
+    revealText: '如果是你妈妈',
     revealDesc: '她每天看手机等女儿的消息，你一句关心就能让她掏心掏肺',
     suspLines: ['你怎么突然问这些呀？', '咱们才刚认识吧…', '我女儿说网上要小心，你不会是骗子吧？', '这个我得先问问我女儿'],
     objection: {
@@ -192,7 +192,7 @@ export const VICTIMS = [
     weakness: '急于证明自己，对"捷径"没有抵抗力',
     fear: '怕落后于人，怕毕业找不到好工作',
     trustBonus: 12,
-    revealText: '像你弟弟',
+    revealText: '如果是你弟弟',
     revealDesc: '他熬夜赶论文时最容易被"轻松赚钱"吸引，你就是他深夜里的那盏灯',
     suspLines: ['哥你别急啊，咱才刚聊', '这也太快了吧？', '不会是坑吧，我同学被骗过', '我一个学生哪有钱啊'],
     objection: {
@@ -210,7 +210,7 @@ export const VICTIMS = [
     weakness: '焦虑财富缩水，对高收益贪婪',
     fear: '怕老了没钱花，怕错过发财机会',
     trustBonus: 18,
-    revealText: '像你同事',
+    revealText: '如果是你同事',
     revealDesc: '她每天刷理财群，你一句"内部消息"就能让她把多年积蓄交给你',
     suspLines: ['你怎么知道我在理财？', '这套话我在群里见过啊', '天上不会掉馅饼吧？', '你先说清楚你什么背景'],
     objection: {
