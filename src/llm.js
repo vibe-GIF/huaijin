@@ -52,16 +52,24 @@ const SYS_HEAL = `你是「怀瑾」的 AI 情绪陪伴——不是心理咨询�
 // ── 危机识别硬规则:命中即绕过 LLM,直接给危机资源(见 Heal.jsx)────
 // 宁可偶尔多触发,也不能漏。覆盖轻生/自伤/"拖累家人"等常见表达。
 const CRISIS_PATTERNS = [
-  '不想活', '活不下去', '活不了', '不想活了', '一了百了', '想死', '去死',
-  '自杀', '轻生', '自残', '自伤', '结束生命', '结束这一切', '离开这个世界',
-  '活着没意思', '活着没意义', '没脸活', '不如死', '死了算了', '跳楼', '跳江',
-  '撑不下去', '熬不下去', '对不起家人', '拖累家人', '拖累孩子', '拖累儿女',
+  '不想活', '活不下去', '活不了', '不想活了', '不想再活', '一了百了', '想死', '去死', '想死了',
+  '自杀', '轻生', '自残', '自伤', '结束生命', '结束自己', '了结自己', '结束这一切', '一死了之',
+  '离开这个世界', '想不开', '活着没意思', '活得没意思', '人生没意思', '活着没意义', '活着好累',
+  '活着太累', '没脸活', '不如死', '不如死了', '死了算了', '跳楼', '跳江', '跳河',
+  '撑不下去', '撑不住', '熬不下去', '熬不住', '只想解脱', '想解脱', '解脱算了',
+  '我想消失', '消失算了', '对不起家人', '拖累家人', '拖累孩子', '拖累儿女', '连累家人', '不想连累',
 ]
+
+// 英文/拼音兜底
+const CRISIS_LATIN = ['suicide', 'kill myself', 'kill me', 'want to die', 'wanna die', 'end my life', 'end it all', 'no reason to live', 'buxiang huo', 'xiang si le']
 
 export function detectCrisis(text) {
   if (!text) return false
-  const t = String(text)
-  return CRISIS_PATTERNS.some((p) => t.includes(p))
+  const raw = String(text)
+  const t = raw.replace(/\s+/g, '') // 去空格,防"不 想 活"绕过
+  if (CRISIS_PATTERNS.some((p) => t.includes(p))) return true
+  const lower = raw.toLowerCase()
+  return CRISIS_LATIN.some((p) => lower.includes(p))
 }
 
 export async function askScammer(messages, beatId) {

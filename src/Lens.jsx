@@ -75,7 +75,7 @@ function VerdictCard({ v }) {
               <div className="tech-quote">「{t.quote}」</div>
               <div className="tech-badge" style={{ background: TECH_COLORS[t.technique] || '#6B7169' }}>{t.technique}</div>
               <div className="tech-mech">{t.mechanism}</div>
-              {t.counter && <div className="tech-counter">💬 {t.counter}</div>}
+              {t.counter && <div className="verdict-counter">💬 {t.counter}</div>}
             </div>
           ))}
         </div>
@@ -104,7 +104,8 @@ function TextEntry({ onVerdict }) {
     const v = await analyzeSuspicious(input)
     onVerdict(v); setLoading(false)
   }
-  const loadCase = (c) => { setInput(c.text); onVerdict(null) }
+  // 点案例直接展示其自带判读(离线也能完整演示);同时把原文填进输入框可再次判读
+  const loadCase = (c) => { setInput(c.text); onVerdict(c.verdict || null) }
 
   return (
     <>

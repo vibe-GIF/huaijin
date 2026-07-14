@@ -126,8 +126,9 @@ export default function Heal() {
     setInput('')
     setMessages((prev) => [...prev, { from: 'user', text }])
 
-    // 危机识别硬规则：命中即置顶危机卡 + 固定回应，绝不交给 LLM
-    if (detectCrisis(text)) {
+    // 危机识别硬规则：命中即置顶危机卡 + 固定回应，绝不交给 LLM。
+    // 一旦进入危机模式，后续消息也持续走危机护栏，不再路由到 LLM。
+    if (crisisActive || detectCrisis(text)) {
       setCrisisActive(true)
       setMessages((prev) => [
         ...prev,

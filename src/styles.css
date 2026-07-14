@@ -982,7 +982,7 @@ body {
 .tech-quote { font-size: 13px; color: var(--text-secondary); font-style: italic; margin-bottom: 8px; line-height: 1.5; }
 .tech-badge { display: inline-block; padding: 4px 12px; border-radius: 16px; color: #fff; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
 .tech-mech { font-size: 14px; color: var(--text-primary); line-height: 1.6; margin-bottom: 6px; }
-.tech-counter { font-size: 14px; color: var(--jade); font-weight: 600; line-height: 1.5; }
+.verdict-counter { font-size: 14px; color: var(--jade); font-weight: 600; line-height: 1.5; }
 
 /* 核实块 */
 .verify-block { background: rgba(45,90,74,0.07); border: 1px solid rgba(45,90,74,0.20); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
