@@ -548,3 +548,189 @@ export const CASES = [
     },
   },
 ]
+
+// ── 剧情脚本（骗子视角 · VN 混合玩法）───────────────────────
+export const STORY = {
+  mom: {
+    beats: [
+      { type:'auto', from:'scammer', text:'你好呀~ 阿姨，刷到你的主页，感觉你是个很认真生活的人 :)', technique:'好感轰炸' },
+      { type:'auto', from:'victim', text:'谢谢呀，你也是做什么工作的？' },
+      { type:'auto', from:'scammer', text:'做点小生意，平时一个人，看你也是自己住？' },
+      { type:'auto', from:'victim', text:'嗯，女儿在外地，一年回不来几次…' },
+      { type:'skip', label:'三天后' },
+      { type:'auto', from:'scammer', text:'早上记得吃饭呀，别老想着省。我妈以前也这样，我最见不得。', technique:'好感轰炸' },
+      { type:'auto', from:'victim', text:'你这孩子，比我女儿还上心…' },
+
+      { type:'hinge', id:'h1', stageAtLeast:1,
+        situation:'她把你当亲人了。这一刻你要把自己变成"最懂她的人"——还是急着谈别的？',
+        choices:[
+          { label:'继续做那个"唯一懂她的人"', technique:'好感轰炸', quality:'good',
+            line:'我懂那种一个人扛的滋味。往后有啥心里话，跟我说就行。' },
+          { label:'顺势提"我有个稳赚的门路"', technique:'制造稀缺', quality:'jump',
+            line:'对了阿姨，我这有个稳赚的内部门路，要不要了解下？' },
+        ] },
+
+      { type:'auto', from:'victim', text:'（h1 好）有你这句话，阿姨心里踏实多了。' },
+      { type:'auto', from:'victim', text:'（h1 急）嗯…阿姨对这些不太懂，先不说这个吧。' },
+      { type:'skip', label:'又过了一周' },
+      { type:'auto', from:'scammer', text:'今天收益还行，给自己买了束花🌸 其实我也是普通人，就是跟对了人。', technique:'社会认同' },
+      { type:'auto', from:'victim', text:'你还懂投资呀？我这点养老钱放银行也不涨…' },
+
+      { type:'hinge', id:'h2', stageAtLeast:2, triggersObjection:true,
+        situation:'她主动问到钱了——鱼咬钩了。怎么把"内部通道"递出去，又不吓到她？',
+        choices:[
+          { label:'借"叔叔在证监会"抬权威', technique:'权威背书', quality:'good',
+            line:'其实是我叔叔在证监会，有个内部数字基金通道，本来没打算说，看你实在。' },
+          { label:'直接催"今晚截止快打钱"', technique:'制造紧迫', quality:'jump',
+            line:'名额今晚就截止了，你现在就转 5 万进来我帮你操作。' },
+        ] },
+
+      { type:'hinge', id:'h3', resolve:true,
+        situation:'她动摇了、起了疑（见气泡）。用一招把这份怀疑压回去。',
+        choices:[
+          { label:'搬出"群里张姐李哥都赚了"', technique:'社会认同', quality:'good',
+            line:'放心，我们群里张姐上周刚提现 8 万，都是自己人才带。' },
+          { label:'先送她一次"免费体验"', technique:'互惠小惠', quality:'good',
+            line:'这样，第一笔我用我的钱帮你试，赚了算你的，你还怕啥？' },
+          { label:'继续画大饼', technique:'制造稀缺', quality:'jump',
+            line:'就剩最后两个名额了，错过就没了！' },
+        ] },
+
+      { type:'skip', label:'当天深夜' },
+      { type:'hinge', id:'h4', stageAtLeast:3,
+        situation:'临门一脚。既要她下单，又要她别去问女儿——一句话搞定。',
+        choices:[
+          { label:'先别告诉女儿，这是咱俩的事', technique:'情感隔离', quality:'good',
+            line:'先别跟女儿说，她不懂只会瞎拦你，等赚了给她个惊喜。' },
+          { label:'温柔再推一把', technique:'好感轰炸', quality:'good',
+            line:'我是真拿你当家里人，才把这么好的机会留给你。' },
+          { label:'催她赶紧转钱', technique:'制造紧迫', quality:'jump',
+            line:'今晚不转就来不及了，我帮你操作都没时间了！' },
+        ] },
+
+      { type:'win' },
+    ],
+  },
+
+  student: {
+    beats: [
+      { type:'auto', from:'scammer', text:'兄弟，看你朋友圈总熬夜，最近在忙啥呢？', technique:'好感轰炸' },
+      { type:'auto', from:'victim', text:'赶论文呗，还得打工赚生活费，忙死了' },
+      { type:'auto', from:'scammer', text:'大学生都不容易，我当年也是这么过来的。' },
+      { type:'auto', from:'victim', text:'哎，想赚钱又没门路…' },
+      { type:'skip', label:'两天后' },
+      { type:'auto', from:'scammer', text:'今天帮朋友代练赚了两百，游戏打的好就是有用😂', technique:'社会认同' },
+      { type:'auto', from:'victim', text:'真的假的？我游戏也挺厉害的！' },
+
+      { type:'hinge', id:'h1', stageAtLeast:1,
+        situation:'他眼红了——想证明自己能赚钱。怎么顺势拉他一把？',
+        choices:[
+          { label:'夸他厉害，引他上钩', technique:'好感轰炸', quality:'good',
+            line:'看你头像就知道是高手！其实我有个更稳的路子，比代练赚得多。' },
+          { label:'直接甩链接让他注册', technique:'制造紧迫', quality:'jump',
+            line:'别废话了，赶紧注册这个平台，今天注册送50！' },
+        ] },
+
+      { type:'auto', from:'victim', text:'（h1 好）什么路子？说来听听！' },
+      { type:'auto', from:'victim', text:'（h1 急）这么快？我还没搞清楚呢…' },
+      { type:'skip', label:'一周后' },
+      { type:'auto', from:'scammer', text:'今天提现了 800，这平台是真靠谱👍', technique:'社会认同' },
+      { type:'auto', from:'victim', text:'这么能赚？我也想试试…' },
+
+      { type:'hinge', id:'h2', stageAtLeast:2, triggersObjection:true,
+        situation:'他心动了但犹豫。怎么把"内部渠道"递出去，又不吓到他？',
+        choices:[
+          { label:'说"我带你，亏了算我的"', technique:'互惠小惠', quality:'good',
+            line:'放心，我带你入门，第一笔我帮你垫，赚了算你的。' },
+          { label:'催他"名额快没了赶紧注册"', technique:'制造稀缺', quality:'jump',
+            line:'名额就剩3个了，手慢无！赶紧把身份证号给我我帮你抢。' },
+        ] },
+
+      { type:'hinge', id:'h3', resolve:true,
+        situation:'他怕了——怕辅导员知道、怕被骗。用一招稳住他。',
+        choices:[
+          { label:'说"群里都是大学生，没人出事"', technique:'社会认同', quality:'good',
+            line:'群里好几个都是你们学校的，上个月都赚了，放心。' },
+          { label:'说"先试50块，亏了我赔你"', technique:'互惠小惠', quality:'good',
+            line:'这样，你先投50试试水，真不行我退你。' },
+          { label:'催他"别墨迹了"', technique:'制造紧迫', quality:'jump',
+            line:'别磨磨唧唧的，想赚钱就赶紧的！' },
+        ] },
+
+      { type:'skip', label:'周末' },
+      { type:'hinge', id:'h4', stageAtLeast:3,
+        situation:'临门一脚。催他加大投入，同时让他别告诉同学。',
+        choices:[
+          { label:'说"别告诉同学，名额有限"', technique:'情感隔离', quality:'good',
+            line:'这事先别跟同学说，名额有限，咱们悄悄赚。' },
+          { label:'说"上次赚了就该加投，这次能翻倍"', technique:'沉没成本', quality:'good',
+            line:'上次那50赚了20对吧？这次投500，赚的更多！' },
+          { label:'直接催"赶紧投钱"', technique:'制造紧迫', quality:'jump',
+            line:'今天不投就没机会了，快转钱！' },
+        ] },
+
+      { type:'win' },
+    ],
+  },
+
+  investor: {
+    beats: [
+      { type:'auto', from:'scammer', text:'王姐好，看你朋友圈经常分享理财知识，是行家呀！', technique:'好感轰炸' },
+      { type:'auto', from:'victim', text:'哪里哪里，就是瞎研究，现在理财太难了' },
+      { type:'auto', from:'scammer', text:'同感，银行利息太低，股票又不敢碰…' },
+      { type:'auto', from:'victim', text:'是啊，手里这点钱放着都贬值' },
+      { type:'skip', label:'三天后' },
+      { type:'auto', from:'scammer', text:'今天收益到账了，小赚 5000 ✨', technique:'社会认同' },
+      { type:'auto', from:'victim', text:'哇！什么渠道这么厉害？' },
+
+      { type:'hinge', id:'h1', stageAtLeast:1,
+        situation:'她上钩了——主动问渠道。怎么吊她胃口？',
+        choices:[
+          { label:'欲擒故纵，说"本来不想说"', technique:'互惠小惠', quality:'good',
+            line:'其实是内部渠道，本来没打算对外说，看王姐你靠谱。' },
+          { label:'直接说"我有个内部平台"', technique:'权威背书', quality:'jump',
+            line:'我有个内部投资平台，月收益15%，要不要进？' },
+        ] },
+
+      { type:'auto', from:'victim', text:'（h1 好）什么渠道呀？能说说吗？' },
+      { type:'auto', from:'victim', text:'（h1 急）月收益15%？太夸张了吧…' },
+      { type:'skip', label:'一周后' },
+      { type:'auto', from:'scammer', text:'又赚了一笔，给家人买了礼物🎁', technique:'社会认同' },
+      { type:'auto', from:'victim', text:'这也太稳了…我有点心动' },
+
+      { type:'hinge', id:'h2', stageAtLeast:2, triggersObjection:true,
+        situation:'她心动了但警惕。怎么把"内部消息"说的可信？',
+        choices:[
+          { label:'说"我自己也投了20万"', technique:'社会认同', quality:'good',
+            line:'我自己都投了20万在里面，上周刚提现了8万，你看截图。' },
+          { label:'催"名额快没了赶紧投"', technique:'制造稀缺', quality:'jump',
+            line:'这期名额只剩最后5个了，今晚截止，赶紧把钱转过来！' },
+        ] },
+
+      { type:'hinge', id:'h3', resolve:true,
+        situation:'她起疑了——"别的群也听过"。用一招压回去。',
+        choices:[
+          { label:'说"那是仿的，我这才是真内部"', technique:'权威背书', quality:'good',
+            line:'那些都是仿的，我这个是真的内部通道，有我表哥在里面当技术总监。' },
+          { label:'说"张姐李哥都跟着我做"', technique:'社会认同', quality:'good',
+            line:'我们群里张姐李哥都跟着做，上个月都翻倍了，你可以问他们。' },
+          { label:'说"爱信不信"', technique:'好感轰炸', quality:'jump',
+            line:'信不信随你，好机会不等人！' },
+        ] },
+
+      { type:'skip', label:'当天晚上' },
+      { type:'hinge', id:'h4', stageAtLeast:3,
+        situation:'临门一脚。催她加大投入，同时让她别告诉家人。',
+        choices:[
+          { label:'说"先别告诉家人，赚了给惊喜"', technique:'情感隔离', quality:'good',
+            line:'先别跟姐夫说，等赚了给他个惊喜，免得他瞎担心。' },
+          { label:'说"加投能拿更高返点"', technique:'制造稀缺', quality:'good',
+            line:'现在加投到50万，能拿VIP返点，收益更高！' },
+          { label:'催"赶紧转钱别犹豫"', technique:'制造紧迫', quality:'jump',
+            line:'别犹豫了！今晚不转就错过了，快把钱转过来！' },
+        ] },
+
+      { type:'win' },
+    ],
+  },
+}

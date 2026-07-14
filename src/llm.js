@@ -128,6 +128,44 @@ export async function analyzeText(text) {
   }
 }
 
+const HEAL_FALLBACKS = [
+  '我在听，你慢慢说。',
+  '嗯，我理解你的感受。',
+  '那一定很难熬吧。',
+  '你愿意说出来，已经很勇敢了。',
+  '别着急，我陪着你。',
+  '有时候，把心里的事说出来就已经很好了。',
+  '你不是一个人在扛。',
+  '我能感受到你现在的不容易。',
+  '慢慢来，不用急着给答案。',
+  '无论怎样，我都在这里。',
+  '如果想哭，也没关系的。',
+  '你已经做得很好了。',
+  '重要的是你现在感觉怎么样。',
+  '有时候，我们需要的只是被听见。',
+  '给自己一点时间，没关系的。',
+]
+
+function matchHealReply(text) {
+  const t = String(text).toLowerCase()
+  if (t.includes('骗') || t.includes('损失') || t.includes('钱')) {
+    return '我知道被骗的感觉很痛，像被信任的人捅了一刀。如果愿意，你可以说说发生了什么——我在听。'
+  }
+  if (t.includes('怕') || t.includes('担心') || t.includes('焦虑')) {
+    return '害怕是正常的，不用强迫自己立刻好起来。先告诉一个你信任的人，别一个人扛。'
+  }
+  if (t.includes('后悔') || t.includes('自责') || t.includes('怪自己')) {
+    return '自责最耗人了。这不是你的错——骗子专门研究怎么攻破人的心理防线，你只是他精心设计的目标之一。'
+  }
+  if (t.includes('家人') || t.includes('孩子') || t.includes('拖累')) {
+    return '你很在乎他们，这说明你是个负责任的人。现在最该做的是跟他们说实话——骗子最想让你孤立。'
+  }
+  if (t.includes('想不开') || t.includes('活着') || t.includes('没意思')) {
+    return '这些念头很危险。现在就拨一个上面的热线，别一个人待着。你值得被好好对待。'
+  }
+  return HEAL_FALLBACKS[Math.floor(Math.random() * HEAL_FALLBACKS.length)]
+}
+
 export async function healReply(messages) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 25000)
@@ -149,11 +187,13 @@ export async function healReply(messages) {
       }),
       signal: controller.signal,
     })
-    if (!res.ok) return null
+    if (!res.ok) throw new Error('API not available')
     const json = await res.json()
-    return json.choices?.[0]?.message?.content || null
+    const content = json.choices?.[0]?.message?.content || ''
+    return content.trim() || null
   } catch {
-    return null
+    const lastMsg = messages[messages.length - 1]
+    return matchHealReply(lastMsg?.text || '')
   } finally {
     clearTimeout(timer)
   }

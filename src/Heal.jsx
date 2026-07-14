@@ -138,11 +138,7 @@ export default function Heal() {
 
     setLoading(true)
     const reply = await healReply(messages.concat({ from: 'user', text }))
-    if (reply) {
-      setMessages((prev) => [...prev, { from: 'ai', text: reply }])
-    } else {
-      setMessages((prev) => [...prev, { from: 'ai', text: '我在这里，你想说什么都可以。' }])
-    }
+    setMessages((prev) => [...prev, { from: 'ai', text: reply || '我在这里，你想说什么都可以。' }])
     setLoading(false)
   }
 
