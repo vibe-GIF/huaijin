@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { analyzeSuspicious, ocrImage, trajectoryVerdict } from './llm.js'
 import { CASES, TRAJECTORY_QUESTIONS, TECH_COLORS } from './data.js'
 
@@ -128,24 +128,31 @@ function TextEntry({ onVerdict }) {
   )
 }
 
-function ImageEntry({ onVerdict }) {
+function ImageEntry({ onVerdict, abortControllerRef }) {
   const [preview, setPreview] = useState(null)
   const [ocrText, setOcrText] = useState('')
   const [status, setStatus] = useState('') // reading | analyzing
   const fileRef = useRef(null)
 
   const pick = (e) => {
+    abortControllerRef.current?.abort()
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
     reader.onload = async () => {
       const dataUrl = reader.result
+      abortControllerRef.current?.abort()
+      abortControllerRef.current = new AbortController()
       setPreview(dataUrl); setOcrText(''); onVerdict(null); setStatus('reading')
-      const text = await ocrImage(dataUrl)
-      if (!text) { setStatus('fail'); return }
-      setOcrText(text); setStatus('analyzing')
-      const v = await analyzeSuspicious(text)
-      onVerdict(v); setStatus('')
+      try {
+        const text = await ocrImage(dataUrl, abortControllerRef.current.signal)
+        if (!text) { setStatus('fail'); return }
+        setOcrText(text); setStatus('analyzing')
+        const v = await analyzeSuspicious(text, abortControllerRef.current.signal)
+        onVerdict(v); setStatus('')
+      } catch {
+        setStatus('')
+      }
     }
     reader.readAsDataURL(file)
   }
@@ -210,8 +217,26 @@ function QuizEntry({ onVerdict }) {
 export default function Lens() {
   const [mode, setMode] = useState('text') // text | image | quiz
   const [verdict, setVerdict] = useState(null)
+  const abortControllerRef = useRef(null)
+  const activeModeRef = useRef('text')
 
-  const switchMode = (m) => { setMode(m); setVerdict(null) }
+  const switchMode = (m) => {
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = null
+    activeModeRef.current = m
+    setMode(m)
+    setVerdict(null)
+  }
+
+  const safeVerdict = useCallback((v) => {
+    if (activeModeRef.current === mode) {
+      setVerdict(v)
+    }
+  }, [mode])
+
+  useEffect(() => {
+    return () => abortControllerRef.current?.abort()
+  }, [])
 
   return (
     <div className="lens-page">
@@ -227,9 +252,9 @@ export default function Lens() {
       </div>
 
       <div className="lens-body">
-        {mode === 'text' && <TextEntry onVerdict={setVerdict} />}
-        {mode === 'image' && <ImageEntry onVerdict={setVerdict} />}
-        {mode === 'quiz' && <QuizEntry onVerdict={setVerdict} />}
+        {mode === 'text' && <TextEntry onVerdict={safeVerdict} />}
+        {mode === 'image' && <ImageEntry onVerdict={safeVerdict} abortControllerRef={abortControllerRef} />}
+        {mode === 'quiz' && <QuizEntry onVerdict={safeVerdict} />}
       </div>
 
       {verdict && <VerdictCard v={verdict} />}

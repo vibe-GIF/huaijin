@@ -327,15 +327,15 @@ const SYS_SUSPICIOUS = `你是反诈判读引擎。分析用户给的一段可�
 1. long 型不要为了凑数硬贴技法，宁可指出"挑不出坏句子，但关系的形状危险"。
 2. 只输出合法 JSON，不要解释、不要 markdown 代码块。`
 
-async function callLLM(body, ms = 25000) {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), ms)
+async function callLLM(body, ms = 25000, signal = null) {
+  const controller = signal ? null : new AbortController()
+  const timer = setTimeout(() => controller?.abort(), ms)
   try {
     const res = await fetch('/api/llm', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      signal: controller.signal,
+      signal: signal || controller?.signal,
     })
     if (!res.ok) return null
     const json = await res.json()
@@ -356,7 +356,7 @@ function parseJSON(raw) {
 }
 
 // 第二层：完整判读卡（红线扫描 + LLM 判读合并）
-export async function analyzeSuspicious(text) {
+export async function analyzeSuspicious(text, signal = null) {
   const redlines = scanRedlines(text)
   const content = await callLLM({
     model: 'glm-4-flash',
@@ -366,7 +366,7 @@ export async function analyzeSuspicious(text) {
       { role: 'system', content: SYS_SUSPICIOUS },
       { role: 'user', content: String(text || '').slice(0, 4000) },
     ],
-  })
+  }, 25000, signal)
   const ai = parseJSON(content)
 
   if (ai && (ai.mode === 'short' || ai.mode === 'long')) {
@@ -413,7 +413,7 @@ function offlineVerdict(text, redlines) {
   }
   return {
     confidence: 25, level: '低风险',
-    headline: '暂时没扫到明显红线，但别把网络善意当成理所当然',
+    headline: '暂时没扫到明显红线，继续保持警惕',
     redlines: [], mode: 'none', techniques: [], trajectory: null,
     verify: ['一旦对方开始谈钱、催你、或要你保密，立刻回来再测', '任何涉钱的事，都先用独立渠道核实本人/官方'],
     empathy: '保持这份谨慎就很好。真朋友、真机构，都经得起你核实一下。',
@@ -422,7 +422,7 @@ function offlineVerdict(text, redlines) {
 }
 
 // 第三层：图片识别（glm-4v-flash 读图 → 文本），再交给 analyzeSuspicious
-export async function ocrImage(dataUrl) {
+export async function ocrImage(dataUrl, signal = null) {
   const content = await callLLM({
     model: 'glm-4v-flash',
     temperature: 0.1,
@@ -436,7 +436,7 @@ export async function ocrImage(dataUrl) {
         ],
       },
     ],
-  }, 30000)
+  }, 30000, signal)
   return content ? String(content).trim() : null
 }
 

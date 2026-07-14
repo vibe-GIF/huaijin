@@ -118,7 +118,7 @@ function Home() {
 
   const scenes = [
     { id: 'sandbox', emoji: '🎭', title: '模拟练兵', desc: '亲手当一次骗子，学会骗子的每一招——这样你才认得出' },
-    { id: 'lens', emoji: '🔍', title: '可疑分析', desc: '粘贴可疑消息，AI逐句标注8种操控技法，帮你看穿套路' },
+    { id: 'lens', emoji: '🔍', title: '可疑分析', desc: '粘贴可疑消息，AI逐句标注9种操控技法，帮你看穿套路' },
     { id: 'heal', emoji: '🫂', title: '心理疗愈', desc: '如果已经经历过，这里有温暖的陪伴和专业的支持' },
   ]
 
@@ -223,7 +223,7 @@ function Home() {
         <div className="stat-card">
           <div className="stat-value">{counts.recovery}<span className="stat-unit">%</span></div>
           <div className="stat-label">损失追回率</div>
-          <div className="stat-source">行业数据</div>
+          <div className="stat-source">反诈机构统计</div>
         </div>
         <div className="stat-card">
           <div className="stat-value">{counts.guilt}<span className="stat-unit">%</span></div>

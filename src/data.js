@@ -302,7 +302,7 @@ export const COPY = {
       '被骗的伤，不只在钱上。羞耻和自责是最常见的反应，说出来，是复原的第一步。',
       '小心"第二刀"：任何声称"先交钱就能帮你追回损失"的"维权中心"，都是二次收割。追损唯一正规渠道是 110 报案。',
     ],
-    hotlines: ['报警 / 追损：110', '反诈专线：96110', '心理援助：12355'],
+    hotlines: ['报警 / 追损：110', '反诈专线：96110', '心理援助：12356'],
   },
   // 起疑教学节拍(戒心爆表时,不硬输,给台阶)
   guardUp: {
@@ -325,7 +325,7 @@ export const TECH_PARAMS = {
   沉没成本: { trustGain: 10, suspGain: 8,  stageMin: 3 },
   制造紧迫: { trustGain: 12, suspGain: 14, stageMin: 3 },
   情感隔离: { trustGain: 16, suspGain: 12, stageMin: 3 },
-  无:       { trustGain: 3,  suspGain: 1,  stageMin: 0 },
+  无:       { trustGain: 0,  suspGain: 5,  stageMin: 99 },
 }
 
 // 信任度决定当前阶段;技法只有在"到点"的阶段用才顺

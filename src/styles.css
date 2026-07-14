@@ -15,7 +15,7 @@ body {
   --jade-light: #3E7A63;
   --accent-orange: #C8722E;  /* 赭石暖橙(浅底可读) */
   --text-primary: #23282A;   /* 墨色 */
-  --text-secondary: #6B7169; /* 墨绿灰 */
+  --text-secondary: #4A5048; /* 墨绿灰（加深以满足 WCAG 对比度）*/
   --cinnabar: #B23A28;       /* 朱砂印章 */
   --border-subtle: rgba(35,40,42,0.10);
   --glass-bg: rgba(45,90,74,0.05);
@@ -1695,7 +1695,7 @@ body {
 /* ── 阶段条 ── */
 .stage-strip { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: #fbf8f1; border-bottom: 1px solid #ececec; }
 .stage-badge { flex-shrink: 0; font-size: 12px; font-weight: 700; color: #fff; background: var(--jade); border-radius: 20px; padding: 4px 12px; }
-.stage-hint { font-size: 12px; color: #8a8378; line-height: 1.4; }
+.stage-hint { font-size: 12px; color: #5A6058; line-height: 1.4; }
 
 /* ── 一手的即时反馈 ── */
 .move-flash { margin: 8px 14px 0; padding: 8px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 600; line-height: 1.5; text-align: center; animation: flashIn .3s ease-out; }

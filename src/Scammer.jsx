@@ -228,6 +228,15 @@ function Play({ victim, onFinish, onLose, onExit }) {
     const stg = stageOf(trustRef.current)
     let dTrust = 0, dSusp = 0, replyKind = 'ai'
 
+    if (technique === '无') {
+      dTrust = 0; dSusp = 5; replyKind = 'susp'
+      showFlash({ type: 'bad', text: '这话没什么说服力 · 对方有点困惑 · 戒心 +5' })
+      trustRef.current = clamp(trustRef.current + dTrust)
+      suspRef.current = clamp(suspRef.current + dSusp)
+      setTrust(trustRef.current); setSusp(suspRef.current)
+      return replyKind
+    }
+
     if (objRef.current) {
       if (RESOLVE_TECHS.includes(technique)) {
         dTrust = 12; dSusp = -32; replyKind = 'obj_resolved'
@@ -289,14 +298,12 @@ function Play({ victim, onFinish, onLose, onExit }) {
 
   const dismissGuard = () => {
     suspRef.current = 55; setSusp(55)
-    objRef.current = false
     setGuard(false)
     advance()
   }
 
   // hinge 后受害者反应:固定 kind(起疑/怀疑)优先;否则按选择质量在紧跟的标记台词里挑对应分支
   const getVictimReply = (replyKind, choice, hingeIdx) => {
-    if (replyKind === 'susp') return pick(victim.suspLines)
     if (replyKind === 'obj_trigger') return victim.objection.text
     if (replyKind === 'obj_resolved') return victim.objection.resolvedReply
     if (replyKind === 'obj_fail') return victim.objection.failReply
@@ -307,6 +314,7 @@ function Play({ victim, onFinish, onLose, onExit }) {
         if (b.text.includes(want)) return b.text.replace(MARKER, '').trim()
       } else break
     }
+    if (replyKind === 'susp') return pick(victim.suspLines)
     return null
   }
 
@@ -320,6 +328,7 @@ function Play({ victim, onFinish, onLose, onExit }) {
   // hinge 结算:以剧本作者标注的 quality 为准(good=到点,jump=太急),不再按当前 trust 重新判阶段
   const decideHinge = (choice, beat) => {
     const p = paramOf(choice.technique)
+    const stg = stageOf(trustRef.current)
     let dTrust = 0, dSusp = 0, replyKind = 'ai'
     if (objRef.current) {
       if (RESOLVE_TECHS.includes(choice.technique)) {
@@ -329,6 +338,9 @@ function Play({ victim, onFinish, onLose, onExit }) {
         dTrust = 3; dSusp = 18; replyKind = 'obj_fail'
         showFlash({ type: 'bad', text: '没压住怀疑 · 戒心 +18 —— 试试社会认同 / 互惠小惠 / 好感轰炸' })
       }
+    } else if (beat?.stageAtLeast != null && stg < beat.stageAtLeast) {
+      dTrust = 2; dSusp = p.suspGain * 2 + 12; replyKind = 'susp'
+      showFlash({ type: 'bad', text: `还没到时候 · 当前是【${STAGES[stg].name}】，这个招数太急了 · 戒心 +${dSusp}` })
     } else if (choice.quality === 'jump') {
       dTrust = 2; dSusp = p.suspGain * 2 + 12; replyKind = 'susp'
       showFlash({ type: 'bad', text: `太急了 ·「${choice.technique}」这会儿会吓到 TA · 戒心 +${dSusp}` })
@@ -361,8 +373,6 @@ function Play({ victim, onFinish, onLose, onExit }) {
     setTyping(true)
     await sleep(650)
     if (!aliveRef.current) return
-    if (suspRef.current >= SUSP_MAX) { setTyping(false); return onLose('spooked') }
-    if (suspRef.current >= SUSP_WARN && !warnedRef.current) { warnedRef.current = true; setTyping(false); return triggerGuard() }
 
     let reply = getVictimReply(replyKind, choice, i)
     if (!reply) reply = await askVictim(messagesRef.current, persona, choice.technique)
@@ -371,6 +381,10 @@ function Play({ victim, onFinish, onLose, onExit }) {
     addMsg({ from: 'victim', text: reply, objection: replyKind === 'obj_trigger' })
 
     cursorRef.current = skipMarkerBeats(i + 1); setCursor(cursorRef.current)
+
+    if (suspRef.current >= SUSP_MAX) return onLose('spooked')
+    if (suspRef.current >= SUSP_WARN && !warnedRef.current) { warnedRef.current = true; return triggerGuard() }
+
     schedule(600)
   }
 
@@ -399,8 +413,6 @@ function Play({ victim, onFinish, onLose, onExit }) {
     const replyKind = decideMove(technique)
     await sleep(600)
     if (!aliveRef.current) return
-    if (suspRef.current >= SUSP_MAX) { setTyping(false); return onLose('spooked') }
-    if (suspRef.current >= SUSP_WARN && !warnedRef.current) { warnedRef.current = true; setTyping(false); return triggerGuard() }
 
     const quality = (technique === '无' || paramOf(technique).stageMin > stageOf(trustRef.current)) ? 'jump' : 'good'
     let reply = getVictimReply(replyKind, { quality }, i)
@@ -410,6 +422,10 @@ function Play({ victim, onFinish, onLose, onExit }) {
     addMsg({ from: 'victim', text: reply, objection: replyKind === 'obj_trigger' })
 
     cursorRef.current = skipMarkerBeats(i + 1); setCursor(cursorRef.current)
+
+    if (suspRef.current >= SUSP_MAX) return onLose('spooked')
+    if (suspRef.current >= SUSP_WARN && !warnedRef.current) { warnedRef.current = true; return triggerGuard() }
+
     schedule(600)
   }
 
